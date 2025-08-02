@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1217722944486128631}
   - component: {fileID: 7496192427024881425}
   - component: {fileID: 3582230363894644144}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Collectable
   m_TagString: Collectable
   m_Icon: {fileID: 0}
@@ -147,3 +147,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83e77b4c962c6f243bbfdc36151c8b32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseSpeed: 3
+  speedVariation: 1
+  lifetime: 12
+  movementType: 0
+  waveAmplitude: 2
+  waveFrequency: 1
+  spiralRate: 0.5
