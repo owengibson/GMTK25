@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,9 +13,8 @@ namespace GMTK25
         private Rigidbody2D _rigidbody2D;
 
         [SerializeField] private float _moveSpeed = 5f;
-        [SerializeField] private float _wiggleStrength = 30f; // How much force movement applies to rotation
-        [SerializeField] private float _springStrength = 10f; // How strong the spring back is
-        [SerializeField] private float _damping = 2f;         // How much to dampen the wiggle
+        [SerializeField] private float _rotationSpeed = 1; // How much horizontal input affects rotation
+        [SerializeField] private float _rotationDamping = 5f; // How quickly rotation slows down
 
         private float _currentRotation = 0f;
         private float _rotationVelocity = 0f;
@@ -34,22 +34,13 @@ namespace GMTK25
 
         void FixedUpdate()
         {
-            _rigidbody2D.AddForce(_moveInput * _moveSpeed, ForceMode2D.Force);
+            _rigidbody2D.AddForce(transform.up * _moveInput.y * _moveSpeed, ForceMode2D.Force);
 
-            // Wiggle effect
-            if (_moveInput.sqrMagnitude > 0.001f)
-            {
-                // Apply force to rotation based on movement direction
-                float targetAngle = Mathf.Atan2(_moveInput.y, _moveInput.x) * Mathf.Rad2Deg;
-                float angleDelta = Mathf.DeltaAngle(_currentRotation, targetAngle);
-                _rotationVelocity += angleDelta * _wiggleStrength * Time.fixedDeltaTime;
-            }
-
-            // Spring back to 0 rotation (default orientation)
-            _rotationVelocity += -_currentRotation * _springStrength * Time.fixedDeltaTime;
+            // Add rotation velocity based on horizontal input
+            _rotationVelocity += -_moveInput.x * _rotationSpeed;
 
             // Damping
-            _rotationVelocity *= Mathf.Exp(-_damping * Time.fixedDeltaTime);
+            _rotationVelocity = Mathf.Lerp(_rotationVelocity, 0, _rotationDamping * Time.fixedDeltaTime);
 
             // Apply rotation
             _currentRotation += _rotationVelocity * Time.fixedDeltaTime;
