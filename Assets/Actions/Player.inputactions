@@ -39,8 +39,8 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "down",
-                    "id": "f1cd0c9e-a62b-4a7f-8e25-910edd9d0011",
+                    "name": "Down",
+                    "id": "5acbb8f3-297b-4209-8918-a588f3384d0f",
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
