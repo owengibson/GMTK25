@@ -54,9 +54,16 @@ namespace GMTK25
         private void OnLoopDetected()
         {
             float area = CalculateLoopArea();
-            if (area <= _minLoopArea) return;
+            List<ICircleable> objs = FindObjectsInLoop(_edgeCollider.points);
+            if (area <= _minLoopArea || objs.Count == 0) return;
 
             Debug.Log("Loop detected with area: " + area);
+            foreach (var obj in objs)
+            {
+                obj.OnCircled();
+                Debug.Log("Circled object");
+            }
+            
 
 
             ResetTrail();
@@ -104,9 +111,45 @@ namespace GMTK25
             foreach (var obj in allCircleables)
             {
                 Vector2 objPosition = obj.GetPosition();
+
+                if (IsPointInPolygon(objPosition, loop))
+                {
+                    capturedObjects.Add(obj);
+                }
+            }
+            return capturedObjects;
+        }
+
+        private bool IsPointInPolygon(Vector2 point, Vector2[] polygon)
+        {
+            int intersectionCount = 0;
+
+            for (int i = 0; i < polygon.Length; i++)
+            {
+                Vector2 v1 = polygon[i];
+                Vector2 v2 = polygon[(i + 1) % polygon.Length];
+
+                if (DoesRayCrossEdge(point, v1, v2))
+                {
+                    intersectionCount++;
+                }
             }
 
-            return new List<ICircleable>();
+            return (intersectionCount % 2) == 1;
+        }
+
+        private bool DoesRayCrossEdge(Vector2 point, Vector2 edgeStart, Vector2 edgeEnd)
+        {
+            // Cast horizontal ray to the right from point
+            // Edge must cross horizontal line through the point
+            if (edgeStart.y > point.y == edgeEnd.y > point.y)
+                return false;
+
+            // Calculate where edge intersects with horizontal line
+            float xIntersection = edgeStart.x + (point.y - edgeStart.y) / (edgeEnd.y - edgeStart.y) * (edgeEnd.x - edgeStart.x);
+
+            // Ray crosses edge if intersection is to the right of point
+            return point.x < xIntersection;
         }
     }
 }
