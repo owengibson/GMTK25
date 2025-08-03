@@ -1,4 +1,5 @@
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -19,6 +20,8 @@ namespace GMTK25
         private float timeAlive;
         private Vector2 screenBounds;
         private Rigidbody2D rb;
+
+        private float _loopModeMultiplier = 1f;
 
         void Awake()
         {
@@ -62,7 +65,8 @@ namespace GMTK25
 
         void Update()
         {
-            timeAlive += Time.deltaTime;
+            if (_loopModeMultiplier != 0f)
+                timeAlive += Time.deltaTime;
 
             // Destroy if lifetime exceeded or off screen
             if (timeAlive > lifetime || IsOffScreen())
@@ -78,7 +82,7 @@ namespace GMTK25
         {
             Vector2 movement = Vector2.zero;
             
-            movement = direction * actualSpeed;
+            movement = direction * actualSpeed * _loopModeMultiplier;
 
             rb.linearVelocity = movement;
         }
@@ -118,6 +122,20 @@ namespace GMTK25
         public Vector2 GetPosition()
         {
             return transform.position;
+        }
+        public void SetLoopMode(bool isLooping)
+        {
+            DOTween.Kill(this);
+            DOTween.To(() => _loopModeMultiplier, x => _loopModeMultiplier = x, isLooping ? 0f : 1f, 0.25f);
+        }
+        void OnEnable()
+        {
+            EventManager.OnLoopModeToggled += SetLoopMode;
+        }
+
+        void OnDisable()
+        {
+            EventManager.OnLoopModeToggled -= SetLoopMode;
         }
     }
 }

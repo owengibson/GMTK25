@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace GMTK25
@@ -11,7 +13,6 @@ namespace GMTK25
     {
         [Header("Detection Settings")]
         [SerializeField] private float _detectionRadius = 0.15f;
-        [SerializeField] private float _minLoopTime = 1f;
         [SerializeField] private float _minLoopArea = 0.5f;
 
         private TrailRenderer _trailRenderer;
@@ -34,15 +35,6 @@ namespace GMTK25
             _canDetectLoop = false;
         }
 
-        void Update()
-        {
-            if (!_canDetectLoop && Time.time - _trailStartTime >= _minLoopTime)
-            {
-                _canDetectLoop = true;
-            }
-        }
-
-
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (_canDetectLoop && collision == _edgeCollider)
@@ -50,12 +42,13 @@ namespace GMTK25
                 OnLoopDetected();
             }
         }
-        
-        private void OnCollisionEnter2D(Collision2D other)
+
+        void OnCollisionEnter2D(Collision2D collision)
         {
-            if (other.gameObject.CompareTag("Collectable"))
+            if (collision.gameObject.CompareTag("Enemy"))
             {
-                Destroy(other.gameObject);
+                PlayerPrefs.SetInt("Score", GameManager.Instance.GetScore());
+                SceneManager.LoadScene("GameOver");
             }
         }
 
@@ -75,6 +68,7 @@ namespace GMTK25
 
 
             ResetTrail();
+            GetComponent<PlayerController>().OnLoopModeEnded(new InputAction.CallbackContext());
         }
 
         private void ResetTrail()
@@ -166,6 +160,15 @@ namespace GMTK25
 
             // Ray crosses edge if intersection is to the right of point
             return point.x < xIntersection;
+        }
+
+        void OnEnable()
+        {
+            EventManager.OnLoopModeToggled += (x) => _canDetectLoop = x;
+        }
+        void OnDisable()
+        {
+            EventManager.OnLoopModeToggled -= (x) => _canDetectLoop = x;
         }
     }
 }
