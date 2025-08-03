@@ -6,5 +6,6 @@ namespace GMTK25
     {
         void OnCircled();
         Vector2 GetPosition();
+        void SetLoopMode(bool isLooping);
     }
 }

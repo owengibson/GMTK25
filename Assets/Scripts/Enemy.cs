@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 namespace GMTK25
@@ -11,6 +12,8 @@ namespace GMTK25
         private Camera cam;
         private PlayerController playerController;
 
+        private float _loopModeMultiplier = 1f;
+
         void Start()
         {
             cam = Camera.main;
@@ -23,7 +26,7 @@ namespace GMTK25
         {
             FindDirectionToPlayer();
 
-            transform.Translate(moveDirection * moveSpeed * Time.deltaTime);
+            transform.Translate(moveDirection * moveSpeed * Time.deltaTime * _loopModeMultiplier);
 
             Vector3 pos = transform.position;
             Vector3 screenBounds = cam.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
@@ -87,6 +90,22 @@ namespace GMTK25
         public Vector2 GetPosition()
         {
             return transform.position;
+        }
+
+        public void SetLoopMode(bool isLooping)
+        {
+            DOTween.Kill(this);
+            DOTween.To(() => _loopModeMultiplier, x => _loopModeMultiplier = x, isLooping ? 0f : 1f, 0.25f);
+        }
+
+        void OnEnable()
+        {
+            EventManager.OnLoopModeToggled += SetLoopMode;
+        }
+
+        void OnDisable()
+        {
+            EventManager.OnLoopModeToggled -= SetLoopMode;
         }
     }
 }

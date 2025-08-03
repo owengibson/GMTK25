@@ -26,6 +26,8 @@ namespace GMTK25
         private List<GameObject> enemies = new List<GameObject>();
         private List<GameObject> collectables = new List<GameObject>();
 
+        private bool _isLoopMode = false;
+
         void Start()
         {
             cam = Camera.main;
@@ -42,6 +44,7 @@ namespace GMTK25
         {
             if (enemyPrefab == null) return;
             if (enemies.Count >= maxEnemies) return;
+            if (_isLoopMode) return;
 
             enemyTimer += Time.deltaTime;
             if (enemyTimer >= enemySpawnRate)
@@ -57,6 +60,7 @@ namespace GMTK25
         {
             if (collectablePrefab == null) return;
             if (collectables.Count >= maxCollectables) return;
+            if (_isLoopMode) return;
 
             collectableTimer += Time.deltaTime;
             if (collectableTimer >= collectableSpawnRate)
@@ -104,6 +108,15 @@ namespace GMTK25
         {
             enemies.RemoveAll(enemy => enemy == null);
             collectables.RemoveAll(collectable => collectable == null);
+        }
+
+        void OnEnable()
+        {
+            EventManager.OnLoopModeToggled += (x) => _isLoopMode = x;
+        }
+        void OnDisable()
+        {
+            EventManager.OnLoopModeToggled -= (x) => _isLoopMode = x;
         }
     }
 }
