@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace GMTK25
 {
@@ -19,7 +20,7 @@ namespace GMTK25
         private float _trailStartTime;
         private bool _canDetectLoop = false;
 
-        void Start()
+        void Awake()
         {
             _trailRenderer = GetComponent<TrailRenderer>();
             _playerDetector = GetComponent<CircleCollider2D>();
@@ -40,8 +41,9 @@ namespace GMTK25
             }
         }
 
-        void OnTriggerEnter2D(Collider2D collision)
-        {
+        
+        private void OnTriggerEnter2D(Collider2D collision) 
+        { 
             if (_canDetectLoop && collision == _edgeCollider)
             {
                 OnLoopDetected();
@@ -50,9 +52,11 @@ namespace GMTK25
 
         private void OnLoopDetected()
         {
-            Debug.Log("Loop detected!");
+            float area = CalculateLoopArea();
+            if (area <= _minLoopArea) return;
 
-            // area calculation, other logic
+            Debug.Log("Loop detected with area: " + area);
+
 
             ResetTrail();
         }
@@ -63,13 +67,31 @@ namespace GMTK25
 
             StartNewTrail();
         }
+
+        private float CalculateLoopArea()
+        {
+            if (_edgeCollider == null || _edgeCollider.points.Length < 3) return 0f;
+
+            // Find the index of the collision point in the edge collider points
+            // int index = Array.IndexOf(_edgeCollider.points, collisionPoint);
+            Vector2[] points = _edgeCollider.points;  //[index..];
+
+            float area = 0f;
+
+            for (int i = 0; i < points.Length; i++)
+            {
+                int j = (i + 1) % points.Length;
+                area += points[i].x * points[j].y;
+                area -= points[j].x * points[i].y;
+            }
+
+            return Mathf.Abs(area) / 2f;
+        }
         
         public void SetTrailColliderReference(GameObject trailColliderObj, EdgeCollider2D edgeCollider)
         {
             _trailCollider = trailColliderObj;
             _edgeCollider = edgeCollider;
-
-            _edgeCollider.isTrigger = true;
         }
     }
 }
