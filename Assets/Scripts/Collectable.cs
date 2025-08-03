@@ -100,13 +100,12 @@ namespace GMTK25
 
         void DestroyCollectable()
         {
-
             Destroy(gameObject);
         }
 
         public IEnumerator WaitForJuiceOnCollection(float duration)
         {
-            GameManager.Instance.AddScore(50);
+            GameManager.Instance.AddScore(100);
             onCollected?.Invoke();
             yield return new WaitForSeconds(duration);
             DestroyCollectable();
