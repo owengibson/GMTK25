@@ -50,6 +50,14 @@ namespace GMTK25
                 OnLoopDetected();
             }
         }
+        
+        private void OnCollisionEnter2D(Collision2D other)
+        {
+            if (other.gameObject.CompareTag("Collectable"))
+            {
+                Destroy(other.gameObject);
+            }
+        }
 
         private void OnLoopDetected()
         {
@@ -63,7 +71,7 @@ namespace GMTK25
                 obj.OnCircled();
                 Debug.Log("Circled object");
             }
-            
+
 
 
             ResetTrail();
