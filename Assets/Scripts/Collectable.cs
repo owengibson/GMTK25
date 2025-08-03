@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace GMTK25
 {
-    public class Collectable : MonoBehaviour
+    public class Collectable : MonoBehaviour, ICircleable
     {
         [Header("Movement Settings")]
         public float baseSpeed = 3f;
@@ -92,14 +92,13 @@ namespace GMTK25
 
         void DestroyCollectable()
         {
-            // Notify spawner
 
             Destroy(gameObject);
         }
 
-        void CollectItem()
+        public void OnCircled()
         {
-            // Add your collection effects here (particles, sound, score, etc.)
+            GameManager.Instance.AddScore(10);
             DestroyCollectable();
         }
     }

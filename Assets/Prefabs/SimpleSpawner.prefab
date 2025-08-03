@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 255394665971756361}
   - component: {fileID: 977378392853822516}
   m_Layer: 0
-  m_Name: CollectableSpawner
+  m_Name: SimpleSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ede842b85dd347942b2d6d9eda9ca92b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 8973906420568688553, guid: fd1fd9a25915dd44e87cb6e73c3ef4b8, type: 3}
   collectablePrefab: {fileID: 176133315398116120, guid: e2bf8ff6a60fd2a439096257d3dcb220, type: 3}
   enemySpawnRate: 6
   collectableSpawnRate: 4
