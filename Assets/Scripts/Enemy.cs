@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace GMTK25
 {
@@ -6,6 +8,9 @@ namespace GMTK25
     {
         public float moveSpeed = 1f;
         public float separationDistance = .1f;
+
+        [Header("Events")]
+        public UnityEvent onCollected;
 
         private Vector2 moveDirection;
         private Camera cam;
@@ -78,10 +83,19 @@ namespace GMTK25
             Destroy(gameObject);
         }
 
-        public void OnCircled()
+        public IEnumerator WaitForJuiceOnCollection(float duration)
         {
             GameManager.Instance.AddScore(50);
-            Destroy(gameObject);
+            onCollected?.Invoke();
+            yield return new WaitForSeconds(duration);
+            DestroyEnemy();
+        }
+
+        public void OnCircled()
+        {
+            GetComponent<CircleCollider2D>().enabled = false;
+            GetComponent<SpriteRenderer>().enabled = false;
+            StartCoroutine(WaitForJuiceOnCollection(1f));
         }
 
         public Vector2 GetPosition()
