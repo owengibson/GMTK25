@@ -331,7 +331,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 3
+  m_Time: 5
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
@@ -344,6 +344,15 @@ TrailRenderer:
         value: 0.06896591
         inSlope: 0
         outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.98402953
+        value: 0.035556547
+        inSlope: -0.06193976
+        outSlope: -0.06193976
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
@@ -462,6 +471,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41fd55d2d73efd7418c8a4454be46453, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _detectionRadius: 0.15
+  _detectionRadius: 0.1
   _minLoopTime: 1
   _minLoopArea: 0.5

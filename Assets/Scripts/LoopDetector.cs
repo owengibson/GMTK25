@@ -81,8 +81,16 @@ namespace GMTK25
             if (_edgeCollider == null || _edgeCollider.points.Length < 3) return 0f;
 
             // Find the index of the collision point in the edge collider points
-            // int index = Array.IndexOf(_edgeCollider.points, collisionPoint);
-            Vector2[] points = _edgeCollider.points;  //[index..];
+            int index = 0;
+            for (int i = 0; i < _edgeCollider.points.Length; i++)
+            {
+                if (Vector2.Distance(_edgeCollider.points[i], _playerDetector.transform.position) < _detectionRadius)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            Vector2[] points = _edgeCollider.points[index..];
 
             float area = 0f;
 
