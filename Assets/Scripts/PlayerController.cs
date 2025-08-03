@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,6 +16,7 @@ namespace GMTK25
         private Rigidbody2D _rigidbody2D;
         private TrailRenderer _loopTrail;
 
+        [SerializeField] private float _loopModeDuration = 5f;
         [SerializeField] private float _moveSpeed = 5f;
         [SerializeField] private float _rotationSpeed = 1; // How much horizontal input affects rotation
         [SerializeField] private float _rotationDamping = 5f; // How quickly rotation slows down
@@ -24,6 +26,11 @@ namespace GMTK25
 
         private float _currentRotation = 0f;
         private float _rotationVelocity = 0f;
+        
+        private bool _canEnterLoopMode = true;
+        private float _loopModeActivationDelay = 2f; // Delay before the player can enter loop mode again
+        private Tween _loopModeTimerTween;
+        private Tween _loopModeActivationDelayTween;
 
         void Awake()
         {
@@ -60,18 +67,40 @@ namespace GMTK25
 
         private void OnLoopModeStarted(InputAction.CallbackContext context)
         {
+            if (!_canEnterLoopMode) return;
+
             EventManager.OnLoopModeToggled?.Invoke(true);
             _normalTrail.emitting = false;
+            _loopTrail.Clear();
             _loopTrail.emitting = true;
+
+            _loopModeTimerTween = DOVirtual.DelayedCall(_loopModeDuration, () =>
+            {
+                OnLoopModeEnded(new InputAction.CallbackContext());
+            });
             
             Debug.Log("Loop mode activated. Time stopped.");
         }
         
-        private void OnLoopModeEnded(InputAction.CallbackContext context)
+        public void OnLoopModeEnded(InputAction.CallbackContext context)
         {
+            if (!_canEnterLoopMode) return;
+
+            _loopModeTimerTween?.Kill();
             EventManager.OnLoopModeToggled?.Invoke(false);
             _loopTrail.emitting = false;
             _normalTrail.emitting = true;
+            _loopTrail.Clear();
+            _normalTrail.Clear();
+
+            _canEnterLoopMode = false;
+            _loopModeAction.Disable();
+
+            _loopModeActivationDelayTween = DOVirtual.DelayedCall(_loopModeActivationDelay, () =>
+            {
+                _canEnterLoopMode = true;  
+                _loopModeAction.Enable();
+            }); 
             
             Debug.Log("Loop mode deactivated. Time resumed.");
         }

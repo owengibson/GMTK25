@@ -61,7 +61,8 @@ namespace GMTK25
 
         void Update()
         {
-            timeAlive += Time.deltaTime;
+            if (_loopModeMultiplier != 0f)
+                timeAlive += Time.deltaTime;
 
             // Destroy if lifetime exceeded or off screen
             if (timeAlive > lifetime || IsOffScreen())

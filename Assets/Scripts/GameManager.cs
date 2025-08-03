@@ -53,6 +53,8 @@ namespace GMTK25
             score += points;
             Debug.Log("Score: " + score);
         }
+        
+        public int GetScore() => score;
 
         public void RestartGame()
         {
