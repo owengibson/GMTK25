@@ -83,5 +83,10 @@ namespace GMTK25
             GameManager.Instance.AddScore(50);
             Destroy(gameObject);
         }
+
+        public Vector2 GetPosition()
+        {
+            return transform.position;
+        }
     }
 }

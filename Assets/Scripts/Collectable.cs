@@ -101,5 +101,10 @@ namespace GMTK25
             GameManager.Instance.AddScore(10);
             DestroyCollectable();
         }
+
+        public Vector2 GetPosition()
+        {
+            return transform.position;
+        }
     }
 }
