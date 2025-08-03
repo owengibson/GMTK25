@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -41,9 +42,9 @@ namespace GMTK25
             }
         }
 
-        
-        private void OnTriggerEnter2D(Collider2D collision) 
-        { 
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
             if (_canDetectLoop && collision == _edgeCollider)
             {
                 OnLoopDetected();
@@ -87,11 +88,25 @@ namespace GMTK25
 
             return Mathf.Abs(area) / 2f;
         }
-        
+
         public void SetTrailColliderReference(GameObject trailColliderObj, EdgeCollider2D edgeCollider)
         {
             _trailCollider = trailColliderObj;
             _edgeCollider = edgeCollider;
+        }
+
+        private List<ICircleable> FindObjectsInLoop(Vector2[] loop)
+        {
+            List<ICircleable> capturedObjects = new List<ICircleable>();
+
+            ICircleable[] allCircleables = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).OfType<ICircleable>().ToArray();
+
+            foreach (var obj in allCircleables)
+            {
+                Vector2 objPosition = obj.GetPosition();
+            }
+
+            return new List<ICircleable>();
         }
     }
 }
