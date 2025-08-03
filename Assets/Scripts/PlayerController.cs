@@ -32,6 +32,9 @@ namespace GMTK25
         private Tween _loopModeTimerTween;
         private Tween _loopModeActivationDelayTween;
 
+        private Camera _mainCamera;
+        private float _edgeBuffer = 0.1f;
+
         void Awake()
         {
             _playerInput = GetComponent<PlayerInput>();
@@ -45,9 +48,15 @@ namespace GMTK25
             _loopTrail.emitting = false;
         }
 
+        void Start()
+        {
+            _mainCamera = Camera.main;
+        }
+
         void Update()
         {
             _moveInput = _moveAction.ReadValue<Vector2>();
+            ClampToScreen();
         }
 
         void FixedUpdate()
@@ -63,6 +72,18 @@ namespace GMTK25
             // Apply rotation
             _currentRotation += _rotationVelocity * Time.fixedDeltaTime;
             _rigidbody2D.MoveRotation(_currentRotation);
+        }
+        void ClampToScreen()
+        {
+            if (_mainCamera == null) return;
+
+            Vector3 screenBounds = _mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
+            Vector3 pos = transform.position;
+
+            pos.x = Mathf.Clamp(pos.x, -screenBounds.x + _edgeBuffer, screenBounds.x - _edgeBuffer);
+            pos.y = Mathf.Clamp(pos.y, -screenBounds.y + _edgeBuffer, screenBounds.y - _edgeBuffer);
+
+            transform.position = pos;
         }
 
         private void OnLoopModeStarted(InputAction.CallbackContext context)
