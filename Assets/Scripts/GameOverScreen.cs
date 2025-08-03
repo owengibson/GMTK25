@@ -6,6 +6,7 @@ namespace GMTK25
     public class GameOverScreen : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI finalScoreText;
+        private float delay = 0f;
 
         private void OnEnable()
         {
@@ -15,6 +16,12 @@ namespace GMTK25
 
         void Update()
         {
+            if (delay < 2f)
+            {
+                delay += Time.deltaTime;
+                return;
+            }
+
             if (Input.anyKeyDown)
             {
                 // Restart the game or go back to the main menu
