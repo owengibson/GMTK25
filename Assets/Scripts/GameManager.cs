@@ -6,6 +6,8 @@ namespace GMTK25
     {
         public static GameManager Instance { get; private set; }
 
+        public TMPro.TextMeshProUGUI scoreText;
+
         private int score;
         private float timeElapsed;
         private bool gameActive = true;
@@ -31,9 +33,18 @@ namespace GMTK25
 
         private void Update()
         {
-            if (gameActive)
+            if (!gameActive) return;
+
+            timeElapsed += Time.deltaTime;
+
+            UpdateUI();
+        }
+
+        public void UpdateUI()
+        {
+            if (scoreText != null)
             {
-                timeElapsed += Time.deltaTime;
+                scoreText.text = "Score: " + score;
             }
         }
 

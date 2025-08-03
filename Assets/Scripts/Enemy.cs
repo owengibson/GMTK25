@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace GMTK25
 {
-    public class Enemy : MonoBehaviour
+    public class Enemy : MonoBehaviour, ICircleable
     {
         public float moveSpeed = 1f;
         public float separationDistance = .1f;
@@ -75,7 +75,12 @@ namespace GMTK25
 
         public void DestroyEnemy()
         {
-            GameManager.Instance.AddScore(100);
+            Destroy(gameObject);
+        }
+
+        public void OnCircled()
+        {
+            GameManager.Instance.AddScore(50);
             Destroy(gameObject);
         }
     }
